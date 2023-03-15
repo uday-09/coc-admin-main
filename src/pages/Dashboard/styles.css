@@ -1,0 +1,16 @@
+.cardStyles {
+  display: flex;
+  flex-direction: row;
+}
+
+.statissticsContainer {
+  display: flex;
+  flex: 1;
+  flex-direction: "row";
+  justify-content: space-evenly;
+  align-items: stretch;
+  flex-wrap: wrap;
+  width: 100%;
+  padding-left: 10px;
+  padding-right: 10px;
+}
