@@ -1,78 +1,175 @@
-import { Card, Space, Statistic, Table, Typography } from "antd";
+import { Card, Col, Space, Statistic, Table, Tag, Typography } from "antd";
 import React, { useState, useEffect } from "react";
 import "./styles.css";
 import { FiList, FiAlertCircle } from "react-icons/fi";
 import { AiOutlineCheckCircle, AiOutlineStop } from "react-icons/ai";
+import { Api } from "../../api";
+import Column from "antd/es/table/Column";
 
 const RecentPosts = () => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [loadingPengingPosts, setLoadingPendingPosts] = useState(false);
+  const [recentPendingPosts, setRecentPendingPosts] = useState([]);
 
-  const fetchPosts = async () => {
+  const fetchPendingPost = async () => {
     try {
-      setLoading(true);
-      const pending = await fetch("https://dummyjson.com/posts");
-      const result = await pending.json();
-      setData(result.posts);
+      setLoadingPendingPosts(true);
+      const response = await Api.get("/admin/post/status?status=accepted");
+      setRecentPendingPosts(response.data?.posts || []);
     } catch (err) {
+      console.log(err);
     } finally {
-      setLoading(false);
+      setLoadingPendingPosts(false);
     }
   };
 
   useEffect(() => {
-    fetchPosts();
+    fetchPendingPost();
   }, []);
 
   return (
     <Table
-      columns={[
-        {
-          title: "Title",
-          dataIndex: "title",
-        },
-        {
-          title: "Description",
-          dataIndex: "body",
-        },
-        {
-          title: "Tags",
-          dataIndex: "tags",
-        },
-        {
-          title: "User Id",
-          dataIndex: "userId",
-        },
-        {
-          title: "Reactions",
-          dataIndex: "reactions",
-        },
-      ]}
-      dataSource={data}
-      loading={loading}
-    ></Table>
+      // columns={[
+      //   {
+      //     title: "Title",
+      //     dataIndex: "title",
+      //   },
+      //   {
+      //     title: "Description",
+      //     dataIndex: "description",
+      //   },
+      //   {
+      //     title: "Posted By",
+      //     dataIndex: "username",
+      //   },
+      //   {
+      //     title: "Location",
+      //     dataIndex: "location",
+      //   },
+      //   {
+      //     title: "Uploaded On",
+      //     dataIndex: "updatedAt",
+      //   },
+      // ]}
+      dataSource={recentPendingPosts}
+      loading={loadingPengingPosts}
+    >
+      <Column title="Posted By" dataIndex={"username"} key={"username"} />
+      <Column
+        title="Title"
+        dataIndex={"title"}
+        key={"title"}
+        render={(title) => {
+          return (
+            <>
+              <Typography.Paragraph>
+                {title.substring(0, 50)}
+              </Typography.Paragraph>
+            </>
+          );
+        }}
+      />
+      <Column
+        title="Description"
+        dataIndex={"description"}
+        key={"description"}
+        render={(title) => {
+          return (
+            <>
+              <Typography.Paragraph>
+                {title.substring(0, 50)}
+              </Typography.Paragraph>
+            </>
+          );
+        }}
+      />
+      <Column
+        title="Tags"
+        dataIndex={"tags"}
+        render={(item) => {
+          return (
+            <>
+              {item.map((tag) => {
+                // console.log(tag);
+                return <Tag color="blue"> {tag}</Tag>;
+              })}
+            </>
+          );
+        }}
+      />
+      <Column
+        title={"Action"}
+        render={() => {
+          return (
+            <>
+              <Typography.Link>Full details</Typography.Link>
+            </>
+          );
+        }}
+      />
+    </Table>
   );
 };
 
-const DashboardCard = ({ title, value, icon }) => {
+const DashboardCard = ({ title, value, icon, loading }) => {
   return (
     <Card className="cardStyles">
       <Space>
         {icon}
-        <Statistic style={{ fontWeight: "bold" }} title={title} value={value} />
+        <Statistic
+          loading={loading}
+          style={{ fontWeight: "bold" }}
+          title={title}
+          value={value}
+        />
       </Space>
     </Card>
   );
 };
 
 function Dashboard() {
+  const [loading, setLoading] = useState(false);
+  const [stats, setStats] = useState({
+    acceptedPostCount: 0,
+    pendingPostsCount: 0,
+    rejectedPostsCount: 0,
+    allPostsCount: 0,
+  });
+
+  const fetchStats = async () => {
+    try {
+      setLoading(true);
+      const response = await Api.get("/admin/stats");
+      setStats({
+        ...stats,
+        acceptedPostCount: response.data?.stats?.acceptedPostCount,
+        rejectedPostsCount: response.data?.stats?.rejectedPostsCount,
+        pendingPostsCount: response.data?.stats?.pendingPostsCount,
+        allPostsCount:
+          stats.rejectedPostsCount +
+          stats.pendingPostsCount +
+          stats.acceptedPostCount,
+      });
+    } catch (err) {
+      console.log(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchStats();
+  }, []);
+
   return (
     <div style={{ margin: 15 }}>
       <Typography.Title level={3}>Dashboard</Typography.Title>
       <div className="statissticsContainer">
         <DashboardCard
           title={"All Posts"}
-          value={500}
+          value={stats.allPostsCount}
+          loading={loading}
           icon={
             <FiList
               style={{
@@ -88,7 +185,8 @@ function Dashboard() {
         ></DashboardCard>
         <DashboardCard
           title={"Accepted Posts"}
-          value={400}
+          value={stats.acceptedPostCount}
+          loading={loading}
           icon={
             <AiOutlineCheckCircle
               style={{
@@ -104,7 +202,8 @@ function Dashboard() {
         ></DashboardCard>
         <DashboardCard
           title={"Pending Posts"}
-          value={50}
+          loading={loading}
+          value={stats.pendingPostsCount}
           icon={
             <FiAlertCircle
               style={{
@@ -120,7 +219,8 @@ function Dashboard() {
         ></DashboardCard>
         <DashboardCard
           title={"Rejected Posts"}
-          value={350}
+          loading={loading}
+          value={stats.rejectedPostsCount}
           icon={
             <AiOutlineStop
               style={{
@@ -135,9 +235,8 @@ function Dashboard() {
           }
         ></DashboardCard>
       </div>
-      <Space>
-        <RecentPosts />
-      </Space>
+      <Typography.Title level={4}>Recent Posts</Typography.Title>
+      <RecentPosts />
     </div>
   );
 }
