@@ -6,7 +6,7 @@ import { AiFillBell, AiOutlineMail } from "react-icons/ai";
 function AppHeader() {
   return (
     <div className="AppHeader">
-      <img src="logo.png" className="Logo" />
+      <img src="logo.png" className="Logo" alt="app-logo" />
       <Typography.Title style={{ fontSize: 20 }}>
         Cop-on-Cloud Admin
       </Typography.Title>

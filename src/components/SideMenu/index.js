@@ -1,10 +1,6 @@
 import { Menu } from "antd";
 import React from "react";
-import {
-  AiFillDashboard,
-  AiFillWarning,
-  AiOutlineAppstore,
-} from "react-icons/ai";
+import { AiFillWarning, AiOutlineAppstore } from "react-icons/ai";
 import { BiListUl, BiUser } from "react-icons/bi";
 import { FiAlertCircle } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
@@ -15,6 +11,7 @@ function SideMenu() {
   return (
     <div className="sideMenu">
       <Menu
+        style={{}}
         onClick={(item) => {
           navigate(item.key);
         }}

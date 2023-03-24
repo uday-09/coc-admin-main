@@ -1,0 +1,20 @@
+.view-post-container {
+  padding: 20px;
+}
+
+h4 {
+  font-weight: 700;
+}
+
+.image-container {
+  border-width: 10px;
+  border-color: black;
+}
+
+.avatar-styles {
+  width: 100px;
+  height: 100px;
+  border-radius: 50px;
+  background-color: pink;
+  border-color: gray;
+}

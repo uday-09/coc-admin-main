@@ -1,4 +1,4 @@
-import { Card, Col, Space, Statistic, Table, Tag, Typography } from "antd";
+import { Card, Space, Statistic, Table, Tag, Typography } from "antd";
 import React, { useState, useEffect } from "react";
 import "./styles.css";
 import { FiList, FiAlertCircle } from "react-icons/fi";
@@ -7,8 +7,6 @@ import { Api } from "../../api";
 import Column from "antd/es/table/Column";
 
 const RecentPosts = () => {
-  const [data, setData] = useState([]);
-  const [loading, setLoading] = useState(false);
   const [loadingPengingPosts, setLoadingPendingPosts] = useState(false);
   const [recentPendingPosts, setRecentPendingPosts] = useState([]);
 
