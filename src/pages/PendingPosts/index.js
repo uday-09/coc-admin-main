@@ -17,13 +17,7 @@ function PendingPosts() {
     try {
       setLoadingPendingPosts(true);
       const response = await Api.get("/admin/post/status?status=pending");
-      setRecentPendingPosts(
-        [
-          ...response.data?.posts,
-          ...response.data?.posts,
-          ...response.data?.posts,
-        ] || []
-      );
+      setRecentPendingPosts([...response.data?.posts] || []);
     } catch (err) {
       console.log(err);
     } finally {
@@ -59,7 +53,9 @@ function PendingPosts() {
             }
           >
             <Card.Meta
-              avatar={<Avatar src="https://joesch.moe/api/v1/random" />}
+              avatar={
+                <Avatar src="https://img.freepik.com/free-vector/illustration-user-avatar-icon_53876-5907.jpg?w=740&t=st=1679688256~exp=1679688856~hmac=cb8f03c31dbaae05837ef2384f5b75da96a6b0a9a3809bcfd1593da1c6b57705" />
+              }
               title={handleModal?.modalData?.title}
               description={handleModal?.modalData?.description}
             />

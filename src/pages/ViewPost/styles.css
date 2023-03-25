@@ -1,5 +1,10 @@
 .view-post-container {
   padding: 20px;
+  width: 80vw;
+  height: 90vh;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
 }
 
 h4 {
@@ -18,3 +23,15 @@ h4 {
   background-color: pink;
   border-color: gray;
 }
+
+.success-btn {
+  background-color: rgba(0, green, 0, 0.5);
+  color: white;
+}
+
+/* .post-image {
+  width: 400px;
+  height: 200px;
+  min-width: 200px;
+  max-width: 350px;
+} */

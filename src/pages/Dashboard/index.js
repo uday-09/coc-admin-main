@@ -5,6 +5,7 @@ import { FiList, FiAlertCircle } from "react-icons/fi";
 import { AiOutlineCheckCircle, AiOutlineStop } from "react-icons/ai";
 import { Api } from "../../api";
 import Column from "antd/es/table/Column";
+import { Link } from "react-router-dom";
 
 const RecentPosts = () => {
   const [loadingPengingPosts, setLoadingPendingPosts] = useState(false);
@@ -98,10 +99,13 @@ const RecentPosts = () => {
       />
       <Column
         title={"Action"}
-        render={() => {
+        dataIndex={"_id"}
+        render={(_id) => {
           return (
             <>
-              <Typography.Link>Full details</Typography.Link>
+              <Link to={`/view/post/${_id}`}>
+                <Typography.Link>Full details</Typography.Link>
+              </Link>
             </>
           );
         }}
