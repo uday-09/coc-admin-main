@@ -20,8 +20,8 @@ function Acceptmodal({
             avatar={
               <Avatar src="https://img.freepik.com/free-vector/illustration-user-avatar-icon_53876-5907.jpg?w=740&t=st=1679688256~exp=1679688856~hmac=cb8f03c31dbaae05837ef2384f5b75da96a6b0a9a3809bcfd1593da1c6b57705" />
             }
-            title={modalData?.title}
-            description={modalData?.description}
+            title={modalData?.title.substring(0, 50) + "..."}
+            description={modalData?.description.substring(0, 50) + "..."}
           />
         </Card>
         <div>

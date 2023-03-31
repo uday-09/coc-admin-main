@@ -14,8 +14,14 @@ const RecentPosts = () => {
   const fetchPendingPost = async () => {
     try {
       setLoadingPendingPosts(true);
-      const response = await Api.get("/admin/post/status?status=accepted");
-      setRecentPendingPosts(response.data?.posts || []);
+      const response = await Api.get("/admin/post/status?status=pending");
+      setRecentPendingPosts(() => {
+        return response.data?.posts.map((item) => {
+          const middle = { ...item, ...item?.postedUserInfo };
+          delete middle?.postedUserInfo;
+          return middle;
+        });
+      });
     } catch (err) {
       console.log(err);
     } finally {
@@ -26,6 +32,8 @@ const RecentPosts = () => {
   useEffect(() => {
     fetchPendingPost();
   }, []);
+
+  console.log("recentPendingPosts-->", recentPendingPosts);
 
   return (
     <Table
@@ -148,10 +156,7 @@ function Dashboard() {
         acceptedPostCount: response.data?.stats?.acceptedPostCount,
         rejectedPostsCount: response.data?.stats?.rejectedPostsCount,
         pendingPostsCount: response.data?.stats?.pendingPostsCount,
-        allPostsCount:
-          stats.rejectedPostsCount +
-          stats.pendingPostsCount +
-          stats.acceptedPostCount,
+        allPostsCount: response.data?.stats?.allPostsCount,
       });
     } catch (err) {
       console.log(err);

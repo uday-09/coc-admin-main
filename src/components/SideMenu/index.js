@@ -11,7 +11,6 @@ function SideMenu() {
   return (
     <div className="sideMenu">
       <Menu
-        style={{}}
         onClick={(item) => {
           navigate(item.key);
         }}

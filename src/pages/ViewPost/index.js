@@ -4,6 +4,8 @@ import { useParams } from "react-router-dom";
 import { Api } from "../../api";
 import "./styles.css";
 import Acceptmodal from "../../components/AcceptModal";
+import RejectModal from "../../components/RejectModal";
+import { Link } from "react-router-dom";
 
 // import { Api } from "../../api";
 
@@ -17,6 +19,9 @@ function ViewFullPost() {
   const [loading, setLoading] = useState(false);
   const [resultModalOpen, setResultModalOpen] = useState(false);
   const [err, setErr] = useState("");
+  const [rejectModalopen, setRejectPostModal] = useState(false);
+  const [userInfo, setUserInfo] = useState({});
+  const [userInfoLoading, setUserInfoLoading] = useState(false);
 
   const handleAcceptPost = async () => {
     setLoading(true);
@@ -37,6 +42,15 @@ function ViewFullPost() {
       });
   };
 
+  const handleRejectPost = async () => {
+    try {
+      setRejectPostModal(true);
+    } catch (err) {
+    } finally {
+      setRejectPostModal(false);
+    }
+  };
+
   const getCurrentPost = async () => {
     try {
       const resp = await Api.get(`/coc/get/post/${id}`);
@@ -46,11 +60,27 @@ function ViewFullPost() {
     }
   };
 
+  const getUserInfo = async () => {
+    try {
+      setUserInfoLoading(true);
+      const response = await Api.get(`/user/${postData.postedBy}`);
+      setUserInfo(response.data?.user);
+    } catch (err) {
+    } finally {
+      setUserInfoLoading(false);
+    }
+  };
+
   useEffect(() => {
-    getCurrentPost();
+    if (!postData) {
+      getCurrentPost();
+    }
   }, [id]);
 
-  console.log(err);
+  useEffect(() => {
+    console.log(postData, postData?.postedBy);
+    getUserInfo();
+  }, [postData]);
 
   return (
     <Spin spinning={loading}>
@@ -72,6 +102,7 @@ function ViewFullPost() {
             ></Result>
           )}
         </Modal>
+
         <Acceptmodal
           open={modalOpen}
           onOk={() => {
@@ -83,11 +114,28 @@ function ViewFullPost() {
           }}
           modalData={postData}
         ></Acceptmodal>
-        <Card style={{ alignSelf: "flex-start", marginRight: 20 }}>
+        <RejectModal
+          modalData={postData}
+          open={rejectModalopen}
+          onOk={() => handleRejectPost()}
+          onCancel={() => setRejectPostModal(false)}
+        ></RejectModal>
+        <Card
+          style={{ alignSelf: "flex-start", marginRight: 20 }}
+          loading={userInfoLoading}
+        >
           <h4>Posted by</h4>
           <div className="image-container">
             <img src={AVATAR} alt="avatar" className="avatar-styles"></img>
-            <Typography.Title>{postData?.username}</Typography.Title>
+            <Typography.Title level={5}>{`Posted By: ${
+              userInfo?.username ? `${userInfo.username}` : `Anonymous`
+            }`}</Typography.Title>
+            <Typography.Title level={5}>{`Location: ${
+              userInfo?.location ? `${userInfo.location}` : `Anonymous`
+            }`}</Typography.Title>
+            <Typography.Title level={5}>{`Email: ${
+              userInfo?.email ? `${userInfo.email}` : `Anonymous`
+            }`}</Typography.Title>
           </div>
         </Card>
 
@@ -125,7 +173,19 @@ function ViewFullPost() {
               justifyContent: "space-between",
             }}
           >
-            <Button danger={true}>Reject</Button>
+            <Link to={`/reject/post/${postData?._id}`}>
+              <Button
+                danger={true}
+                onClick={() => {
+                  console.log("Reject clicked");
+                  setModalOpen(false);
+                  setResultModalOpen(false);
+                  setRejectPostModal(true);
+                }}
+              >
+                Reject
+              </Button>
+            </Link>
             <Button type="primary" onClick={() => setModalOpen(true)}>
               Accept
             </Button>

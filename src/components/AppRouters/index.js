@@ -6,6 +6,7 @@ import RejectedPosts from "../../pages/RejectedPosts";
 import PendingPosts from "../../pages/PendingPosts";
 import ManageProfile from "../../pages/ManageProfile";
 import ViewFullPost from "../../pages/ViewPost";
+import RejectPostForm from "../../pages/RejectPostForm";
 
 function AppRoutes() {
   return (
@@ -16,6 +17,7 @@ function AppRoutes() {
       <Route path="/profile" element={<ManageProfile />}></Route>
       <Route path="/rejected-posts" element={<RejectedPosts />}></Route>
       <Route path="/view/post/:id" element={<ViewFullPost />} />
+      <Route path="/reject/post/:id" element={<RejectPostForm />} />
     </Routes>
   );
 }

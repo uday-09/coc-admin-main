@@ -1,0 +1,9 @@
+.reject-post-body {
+  width: 80vw;
+  /* background-color: pink; */
+  text-align: center;
+  padding: 20px;
+  display: flex;
+  flex-direction: row;
+  justify-content: start;
+}
