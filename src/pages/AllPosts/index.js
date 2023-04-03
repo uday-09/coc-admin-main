@@ -5,6 +5,7 @@ import { Card, Avatar, Button, Modal, Typography, Space } from "antd";
 import "./styles.css";
 import { Link } from "react-router-dom";
 import { Spin } from "antd";
+import ErrorPage from "../../components/ErrorPage";
 
 function AllPosts() {
   const [lodingAllPosts, setLoadingAllPosts] = useState(false);
@@ -13,6 +14,7 @@ function AllPosts() {
     isOpen: false,
     modalData: null,
   });
+  const [err, setErr] = useState("");
 
   const fetchAllPosts = async () => {
     try {
@@ -21,12 +23,14 @@ function AllPosts() {
       setAllPosts([...response.data?.posts] || []);
     } catch (err) {
       console.log(err);
+      setErr(err?.response?.message || err?.message || "Something went wrong!");
     } finally {
       setLoadingAllPosts(false);
     }
   };
 
   useEffect(() => {
+    setErr("");
     fetchAllPosts();
   }, []);
 
@@ -40,6 +44,10 @@ function AllPosts() {
   const resetModal = () => {
     setHandleModal({ isOpen: false, modalData: {} });
   };
+
+  if (err) {
+    return <ErrorPage errorMessage={err}></ErrorPage>;
+  }
 
   return (
     <Spin spinning={lodingAllPosts}>

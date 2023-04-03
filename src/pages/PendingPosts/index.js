@@ -5,6 +5,7 @@ import { Card, Avatar, Button, Modal, Typography, Space } from "antd";
 import "./styles.css";
 import { Link } from "react-router-dom";
 import { Spin } from "antd";
+import ErrorPage from "../../components/ErrorPage";
 
 function PendingPosts() {
   const [loadingPengingPosts, setLoadingPendingPosts] = useState(false);
@@ -13,6 +14,7 @@ function PendingPosts() {
     isOpen: false,
     modalData: null,
   });
+  const [err, setErr] = useState("");
 
   const fetchPendingPost = async () => {
     try {
@@ -21,12 +23,14 @@ function PendingPosts() {
       setRecentPendingPosts([...response.data?.posts] || []);
     } catch (err) {
       console.log(err);
+      setErr(err?.response?.message || err?.message || "Something went wrong!");
     } finally {
       setLoadingPendingPosts(false);
     }
   };
 
   useEffect(() => {
+    setErr("");
     fetchPendingPost();
   }, []);
 
@@ -40,6 +44,10 @@ function PendingPosts() {
   const resetModal = () => {
     setHandleModal({ isOpen: false, modalData: {} });
   };
+
+  if (err) {
+    return <ErrorPage errorMessage={err}></ErrorPage>;
+  }
 
   return (
     <Spin spinning={loadingPengingPosts}>

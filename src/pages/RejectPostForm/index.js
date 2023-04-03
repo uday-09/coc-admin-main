@@ -1,12 +1,25 @@
-import { Space, Breadcrumb, Form, Input, Radio, Checkbox } from "antd";
-import React, { useState, useEffect } from "react";
+import {
+  Space,
+  Breadcrumb,
+  Form,
+  Input,
+  Radio,
+  Checkbox,
+  Card,
+  Typography,
+  Button,
+} from "antd";
+import React, { useState, useEffect, useRef } from "react";
 import "./styles.css";
 import { useParams } from "react-router-dom";
 import { Api } from "../../api";
+import { Link } from "react-router-dom";
 
 function RejectPostForm() {
   const { id } = useParams();
   const [postData, setPostData] = useState(null);
+  const [reason, setReason] = useState("");
+  const textareaRef = useRef("");
   console.log("id from Reject post-->", postData);
 
   const getCurrentPost = async () => {
@@ -22,27 +35,75 @@ function RejectPostForm() {
     getCurrentPost();
   }, []);
 
+  const handleSubmit = () => {
+    const customReasonValue = textareaRef.current;
+    console.log(customReasonValue);
+  };
+
+  const checKBoxOptions = [
+    {
+      label: "Image/Video is not relavant to Subject",
+      value: "Image/Video is not relavant to Subject",
+    },
+    {
+      label: "Title and Description are not relavant",
+      value: "Title and Description are not relavant",
+    },
+    {
+      label: "Not enough description provided",
+      value: "Not enough description provided",
+    },
+    {
+      label: "Post found to be misleading",
+      value: "Post found to be misleading",
+    },
+    {
+      label: "Post found to be Offensive",
+      value: "Post found to be Offensive",
+    },
+    {
+      label: "Post found to be False information",
+      value: "Post found to be False information",
+    },
+  ];
+
+  const onChange = (checkedValues) => {
+    console.log(checkedValues);
+  };
+
   return (
     <div className="reject-post-body">
-      <Form style={{ width: 500 }}>
-        <Form.Item label="Common Reasons Templates">
-          {/* <Radio.Group style={{ display: "flex", flexDirection: "column" }}>
-            <Radio value="apple"> Apple </Radio>
-            <Radio value="pear"> Pear </Radio>
-          </Radio.Group> */}
-          <Checkbox.Group>
-            <Checkbox>Image/Video is not relavant to Subject</Checkbox>
-            <Checkbox>Title and Description are not relavant</Checkbox>
-            <Checkbox>Not enough description provided</Checkbox>
-            <Checkbox>Post found to be misleading</Checkbox>
-            <Checkbox>Post found to be Offensive</Checkbox>
-            <Checkbox>Post found to be False information</Checkbox>
-          </Checkbox.Group>
-        </Form.Item>
-        <Form.Item label="Why rejecting post?">
-          <Input></Input>
-        </Form.Item>
-      </Form>
+      <Card
+        cover={
+          <img
+            alt="Post-item"
+            src={postData?.imageUri}
+            style={{ width: "100%", height: 250 }}
+          />
+        }
+      >
+        <Typography.Title level={5}>{postData?.title}</Typography.Title>
+        <Form style={{ width: 500, marginTop: 20 }} layout="vertical">
+          <Form.Item label="Common Reasons Templates">
+            <Checkbox.Group
+              options={checKBoxOptions}
+              onChange={onChange}
+              style={{ flexDirection: "column" }}
+            />
+          </Form.Item>
+          <Form.Item label="Write Custom Reason/Note here...">
+            <Input.TextArea rows={6} ref={textareaRef}></Input.TextArea>
+          </Form.Item>
+        </Form>
+        <div style={{ display: "flex", justifyContent: "space-between" }}>
+          <Link to={`/view/post/${id}`}>
+            <Button>Go Back</Button>
+          </Link>
+          <Button type="primary" onClick={() => handleSubmit()}>
+            Submit
+          </Button>
+        </div>
+      </Card>
     </div>
   );
 }
