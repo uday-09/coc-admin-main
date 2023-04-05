@@ -20,7 +20,6 @@ function RejectPostForm() {
   const [postData, setPostData] = useState(null);
   const [reason, setReason] = useState("");
   const textareaRef = useRef("");
-  console.log("id from Reject post-->", postData);
 
   const getCurrentPost = async () => {
     try {
@@ -81,6 +80,7 @@ function RejectPostForm() {
             style={{ width: "100%", height: 250 }}
           />
         }
+        style={{ maxWidth: 600 }}
       >
         <Typography.Title level={5}>{postData?.title}</Typography.Title>
         <Form style={{ width: 500, marginTop: 20 }} layout="vertical">
@@ -92,7 +92,16 @@ function RejectPostForm() {
             />
           </Form.Item>
           <Form.Item label="Write Custom Reason/Note here...">
-            <Input.TextArea rows={6} ref={textareaRef}></Input.TextArea>
+            <Input.TextArea
+              rows={6}
+              ref={textareaRef}
+              onChange={(e) => setReason(e.target.value)}
+            ></Input.TextArea>
+          </Form.Item>
+          <Form.Item>
+            <Checkbox checked={true}>
+              An email will be sent to user regarding the rejection of this post
+            </Checkbox>
           </Form.Item>
         </Form>
         <div style={{ display: "flex", justifyContent: "space-between" }}>
