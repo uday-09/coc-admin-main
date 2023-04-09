@@ -1,9 +1,11 @@
 import React from "react";
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState, useEffect, useCallback } from "react";
 import "./styles.css";
 import { Button, Form, Input, Typography } from "antd";
 import { CloudUploadOutlined } from "@ant-design/icons";
 import { Api } from "../../api";
+import Nofity from "../../components/Notify";
+
 const AVATAR =
   "https://img.freepik.com/free-vector/illustration-user-avatar-icon_53876-5907.jpg?w=740&t=st=1679688256~exp=1679688856~hmac=cb8f03c31dbaae05837ef2384f5b75da96a6b0a9a3809bcfd1593da1c6b57705";
 
@@ -22,6 +24,7 @@ function ManageProfile() {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [err, setErr] = useState("");
+  const [notify, setNotify] = useState(false);
   const handlePicker = () => {
     fileRef.current.click();
   };
@@ -40,6 +43,8 @@ function ManageProfile() {
     getMe();
   }, []);
 
+  console.log(userInfo);
+
   useEffect(() => {
     setDetails((prev) => {
       return {
@@ -53,10 +58,30 @@ function ManageProfile() {
     });
   }, [userInfo]);
 
+  const onTimeOut = useCallback(() => {
+    setNotify(false);
+  }, [notify]);
+
+  const onClose = useCallback(() => {
+    setNotify(false);
+  }, []);
+
   const handleUpdate = async () => {
     setErr("");
+    setSuccess(false);
     try {
       setLoading(true);
+
+      const formData = new FormData();
+
+      formData.append("image", dp);
+      let imageUri = undefined;
+      if (dp) {
+        console.log("Hey---->");
+        const resp = await Api.post("/post/crime/picture", formData);
+        imageUri = resp.data?.imageUri;
+        console.log("imageUri--->", imageUri);
+      }
       const response = await Api.patch("/user/update/me", {
         username: details.username,
         email: details.email,
@@ -64,21 +89,33 @@ function ManageProfile() {
         age: parseInt(details.age),
         name: details.name,
         bio: details.bio,
+        profilePic: imageUri || userInfo?.profilePic,
       });
       setSuccess(true);
     } catch (err) {
+      console.log(err);
+      console.log(err, err?.response?.data?.message);
       setErr(
-        err?.response?.data?.messsage ||
+        err?.response?.data?.message ||
           err.messsage ||
           "Something Went wrong. Try again later!"
       );
     } finally {
+      setNotify(true);
       setLoading(false);
+      window.scrollTo(0, 0);
     }
   };
 
   return (
     <>
+      <Nofity
+        show={notify}
+        message={success ? "Your profile has been updated succesfully!" : err}
+        success={success}
+        onClose={onClose}
+        onTimeOut={onTimeOut}
+      />
       <Typography.Title level={4}>Edit your profile here</Typography.Title>
       <div className="manage-user-body">
         <Form
@@ -94,14 +131,16 @@ function ManageProfile() {
             <div onClick={handlePicker} className="image-picker">
               <img
                 alt="profile-pic"
-                src={dp || AVATAR}
+                src={
+                  dp ? URL.createObjectURL(dp) : userInfo?.profilePic || AVATAR
+                }
                 className="dp-styles"
               ></img>
               <input
                 type="file"
                 style={{ display: "none" }}
                 ref={fileRef}
-                onChange={(e) => setDp(URL.createObjectURL(e.target.files[0]))}
+                onChange={(e) => setDp(e.target.files[0])}
               ></input>
             </div>
             <div
@@ -174,14 +213,6 @@ function ManageProfile() {
               onChange={(e) => setDetails({ ...details, age: e.target.value })}
             ></Input>
           </Form.Item>
-          {err && (
-            <Typography.Text style={{ color: "red" }}>{err}</Typography.Text>
-          )}
-          {success && (
-            <Typography.Text style={{ color: "green" }}>
-              Succefully updated your profile!
-            </Typography.Text>
-          )}
           <Button
             type="primary"
             onClick={() => handleUpdate()}
