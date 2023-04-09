@@ -18,6 +18,7 @@ function PendingPosts() {
 
   const fetchPendingPost = async () => {
     try {
+      setErr("");
       setLoadingPendingPosts(true);
       const response = await Api.get("/admin/post/status?status=pending");
       setRecentPendingPosts([...response.data?.posts] || []);
@@ -47,6 +48,12 @@ function PendingPosts() {
 
   if (err) {
     return <ErrorPage errorMessage={err}></ErrorPage>;
+  }
+
+  if (!loadingPengingPosts && recentPendingPosts.length === 0) {
+    return (
+      <ErrorPage errorMessage="No pending posts found at the moment!"></ErrorPage>
+    );
   }
 
   return (
@@ -120,7 +127,14 @@ function PendingPosts() {
               ]}
             >
               <Card.Meta
-                avatar={<Avatar src="https://joesch.moe/api/v1/random" />}
+                avatar={
+                  <Avatar
+                    src={
+                      item?.postedUserInfo?.profilePic ||
+                      "https://joesch.moe/api/v1/random"
+                    }
+                  />
+                }
                 title={item?.title.substring(0, 50) + "..."}
                 description={item?.description.substring(0, 50) + "..."}
               />

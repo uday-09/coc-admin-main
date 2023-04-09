@@ -1,15 +1,18 @@
 import { Card, Space, Statistic, Table, Tag, Typography } from "antd";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import "./styles.css";
 import { FiList, FiAlertCircle } from "react-icons/fi";
 import { AiOutlineCheckCircle, AiOutlineStop } from "react-icons/ai";
 import { Api } from "../../api";
 import Column from "antd/es/table/Column";
 import { Link } from "react-router-dom";
+import { UserContext } from "../../Context/userContext";
 
 const RecentPosts = () => {
   const [loadingPengingPosts, setLoadingPendingPosts] = useState(false);
   const [recentPendingPosts, setRecentPendingPosts] = useState([]);
+
+  const { state: userState, addUser } = useContext(UserContext);
 
   const fetchPendingPost = async () => {
     try {
@@ -30,6 +33,10 @@ const RecentPosts = () => {
   };
 
   useEffect(() => {
+    if (!userState?.userInfo) {
+      addUser();
+    }
+
     fetchPendingPost();
   }, []);
 

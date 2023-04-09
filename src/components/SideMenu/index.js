@@ -1,6 +1,6 @@
 import { Menu } from "antd";
 import React from "react";
-import { AiFillWarning, AiOutlineAppstore } from "react-icons/ai";
+import { AiFillWarning, AiOutlineAppstore, AiOutlineKey } from "react-icons/ai";
 import { BiListUl, BiUser } from "react-icons/bi";
 import { FiAlertCircle } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
@@ -39,6 +39,11 @@ function SideMenu() {
             label: "Manage Profile",
             key: "/profile",
             icon: <BiUser />,
+          },
+          {
+            label: "Change Password",
+            key: "/change-password",
+            icon: <AiOutlineKey />,
           },
         ]}
       ></Menu>

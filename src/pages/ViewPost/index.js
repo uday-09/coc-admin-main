@@ -82,6 +82,8 @@ function ViewFullPost() {
     getUserInfo();
   }, [postData]);
 
+  console.log("userInfo--->", userInfo);
+
   return (
     <Spin spinning={loading}>
       <div className="view-post-container">
@@ -126,7 +128,11 @@ function ViewFullPost() {
         >
           <h4>Posted by</h4>
           <div className="image-container">
-            <img src={AVATAR} alt="avatar" className="avatar-styles"></img>
+            <img
+              src={userInfo?.profilePic || AVATAR}
+              alt="avatar"
+              className="avatar-styles"
+            ></img>
             <Typography.Title level={5}>{`Posted By: ${
               userInfo?.username ? `${userInfo.username}` : `Anonymous`
             }`}</Typography.Title>

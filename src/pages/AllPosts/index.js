@@ -49,6 +49,10 @@ function AllPosts() {
     return <ErrorPage errorMessage={err}></ErrorPage>;
   }
 
+  if (!lodingAllPosts && allPosts.length === 0) {
+    return <ErrorPage errorMessage="No data found at the moment!"></ErrorPage>;
+  }
+
   return (
     <Spin spinning={lodingAllPosts}>
       <div className="pending-posts-container">
@@ -109,10 +113,14 @@ function AllPosts() {
               }
               actions={[
                 <Link to={`/view/post/${item?._id}`}>
-                  <Button type="primary">Accept</Button>
+                  {
+                    <Button type="primary">
+                      {item?.postStatus === "accepted" ? "Reject" : "Accept"}
+                    </Button>
+                  }
                 </Link>,
                 <Link to={`/view/post/${item?._id}`}>
-                  <Button danger={true}>Reject</Button>
+                  <Button>View More</Button>
                 </Link>,
                 <Link to={`/view/post/${item?._id}`}>
                   <Button
@@ -131,7 +139,14 @@ function AllPosts() {
               ]}
             >
               <Card.Meta
-                avatar={<Avatar src="https://joesch.moe/api/v1/random" />}
+                avatar={
+                  <Avatar
+                    src={
+                      item?.postedUserInfo?.profilePic ||
+                      "https://joesch.moe/api/v1/random"
+                    }
+                  />
+                }
                 title={item?.title.substring(0, 50) + "..."}
                 description={item?.description.substring(0, 50) + "..."}
               />

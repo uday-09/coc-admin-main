@@ -7,6 +7,7 @@ import PendingPosts from "../../pages/PendingPosts";
 import ManageProfile from "../../pages/ManageProfile";
 import ViewFullPost from "../../pages/ViewPost";
 import RejectPostForm from "../../pages/RejectPostForm";
+import ChangePassword from "../../pages/ChangePassword";
 
 function AppRoutes() {
   return (
@@ -18,6 +19,7 @@ function AppRoutes() {
       <Route path="/rejected-posts" element={<RejectedPosts />}></Route>
       <Route path="/view/post/:id" element={<ViewFullPost />} />
       <Route path="/reject/post/:id" element={<RejectPostForm />} />
+      <Route path="/change-password" element={<ChangePassword />} />
     </Routes>
   );
 }

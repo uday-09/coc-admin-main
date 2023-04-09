@@ -1,0 +1,11 @@
+.page-body {
+  /* background-color: pink; */
+  width: 80vw;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  flex-wrap: wrap;
+  padding: 20px;
+  align-self: center;
+  text-align: center;
+}

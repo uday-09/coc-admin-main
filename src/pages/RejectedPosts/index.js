@@ -5,6 +5,7 @@ import { Card, Avatar, Button, Modal, Typography, Space } from "antd";
 import "./styles.css";
 import { Link } from "react-router-dom";
 import { Spin } from "antd";
+import ErrorPage from "../../components/ErrorPage";
 
 function RejectedPosts() {
   const [lodingRejectedPosts, setLoadingRejectedPosts] = useState(false);
@@ -14,13 +15,19 @@ function RejectedPosts() {
     modalData: null,
   });
 
+  const [err, setErr] = useState("");
+
   const fetchRejectedPosts = async () => {
+    setErr("");
     try {
       setLoadingRejectedPosts(true);
       const response = await Api.get("/admin/post/status?status=rejected");
       setRejectedPosts([...response.data?.posts] || []);
     } catch (err) {
       console.log(err);
+      setErr(
+        err?.response?.data?.message || err?.response || "Something went wrong!"
+      );
     } finally {
       setLoadingRejectedPosts(false);
     }
@@ -40,6 +47,16 @@ function RejectedPosts() {
   const resetModal = () => {
     setHandleModal({ isOpen: false, modalData: {} });
   };
+
+  if (!lodingRejectedPosts && err) {
+    return <ErrorPage errorMessage={err}></ErrorPage>;
+  }
+
+  if (!lodingRejectedPosts && allPosts.length === 0) {
+    return (
+      <ErrorPage errorMessage="No rejected posts found at the moment!"></ErrorPage>
+    );
+  }
 
   return (
     <Spin spinning={lodingRejectedPosts}>
@@ -125,7 +142,14 @@ function RejectedPosts() {
               ]}
             >
               <Card.Meta
-                avatar={<Avatar src="https://joesch.moe/api/v1/random" />}
+                avatar={
+                  <Avatar
+                    src={
+                      item?.postedUserInfo?.profilePic ||
+                      "https://joesch.moe/api/v1/random"
+                    }
+                  />
+                }
                 title={item?.title.substring(0, 50) + "..."}
                 description={item?.description.substring(0, 50) + "..."}
               />
