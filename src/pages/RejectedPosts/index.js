@@ -110,11 +110,20 @@ function RejectedPosts() {
                 marginBottom: 15,
               }}
               cover={
-                <img
-                  alt="Post-item"
-                  src={item?.imageUri}
-                  style={{ width: 350, height: 200 }}
-                />
+                <>
+                  {item?.imageUri.endsWith("mp4") ||
+                  item?.imageUri.endsWith("mkv") ? (
+                    <video controls style={{ width: 350, height: 200 }}>
+                      <source src={item?.imageUri} type="video/mp4" />
+                    </video>
+                  ) : (
+                    <img
+                      alt="Post-item"
+                      src={item?.imageUri}
+                      style={{ width: 350, height: 200 }}
+                    />
+                  )}
+                </>
               }
               actions={[
                 // <Link to={`/view/post/${item?._id}`}>

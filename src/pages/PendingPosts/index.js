@@ -72,11 +72,13 @@ function PendingPosts() {
                 height: 400,
               }}
               cover={
-                <img
-                  alt="Post-item"
-                  src={handleModal?.modalData?.imageUri}
-                  style={{ width: 300, height: 200 }}
-                />
+                <>
+                  <img
+                    alt="Post-item"
+                    src={handleModal?.modalData?.imageUri}
+                    style={{ width: 300, height: 200 }}
+                  />
+                </>
               }
             >
               <Card.Meta
@@ -97,6 +99,7 @@ function PendingPosts() {
         </Modal>
 
         {recentPendingPosts.map((item, index) => {
+          console.log(item.imageUri?.split(".").pop());
           return (
             <Card
               hoverable={true}
@@ -108,11 +111,20 @@ function PendingPosts() {
                 marginBottom: 15,
               }}
               cover={
-                <img
-                  alt="Post-item"
-                  src={item?.imageUri}
-                  style={{ width: 350, height: 200 }}
-                />
+                <>
+                  {item?.imageUri.endsWith("mp4") ||
+                  item?.imageUri.endsWith("mkv") ? (
+                    <video controls style={{ width: 350, height: 200 }}>
+                      <source src={item?.imageUri} type="video/mp4" />
+                    </video>
+                  ) : (
+                    <img
+                      alt="Post-item"
+                      src={item?.imageUri}
+                      style={{ width: 350, height: 200 }}
+                    />
+                  )}
+                </>
               }
               actions={[
                 <Link to={`/view/post/${item?._id}`}>

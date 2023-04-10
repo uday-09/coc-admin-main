@@ -22,6 +22,7 @@ function ViewFullPost() {
   const [rejectModalopen, setRejectPostModal] = useState(false);
   const [userInfo, setUserInfo] = useState({});
   const [userInfoLoading, setUserInfoLoading] = useState(false);
+  const [assetType, setAssetType] = useState("image");
 
   const handleAcceptPost = async () => {
     setLoading(true);
@@ -55,6 +56,13 @@ function ViewFullPost() {
     try {
       const resp = await Api.get(`/coc/get/post/${id}`);
       setPostData(resp.data);
+      const asset = resp?.data?.imageUri.split(".").pop();
+      console.log("assetType---->", asset);
+      if (asset === "mp4" || asset === "mkv") {
+        setAssetType("video");
+      } else {
+        setAssetType("image");
+      }
     } catch (err) {
     } finally {
     }
@@ -82,7 +90,7 @@ function ViewFullPost() {
     getUserInfo();
   }, [postData]);
 
-  console.log("userInfo--->", userInfo);
+  console.log("userInfo--->", assetType);
 
   return (
     <Spin spinning={loading}>
@@ -128,11 +136,6 @@ function ViewFullPost() {
         >
           <h4>Posted by</h4>
           <div className="image-container">
-            <img
-              src={userInfo?.profilePic || AVATAR}
-              alt="avatar"
-              className="avatar-styles"
-            ></img>
             <Typography.Title level={5}>{`Posted By: ${
               userInfo?.username ? `${userInfo.username}` : `Anonymous`
             }`}</Typography.Title>
@@ -153,11 +156,19 @@ function ViewFullPost() {
             width: 500,
           }}
           cover={
-            <img
-              className="post-image"
-              src={postData?.imageUri}
-              alt="crime-scene"
-            />
+            <>
+              {assetType === "image" ? (
+                <img
+                  className="post-image"
+                  src={postData?.imageUri}
+                  alt="crime-scene"
+                />
+              ) : (
+                <video width="750" height="500" controls>
+                  <source src={postData?.imageUri} type="video/mp4" />
+                </video>
+              )}
+            </>
           }
         >
           <Typography.Title level={5} style={{ paddingTop: 0, marginTop: 0 }}>

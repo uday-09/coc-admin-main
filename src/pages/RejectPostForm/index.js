@@ -102,11 +102,20 @@ function RejectPostForm() {
       <div className="reject-post-body">
         <Card
           cover={
-            <img
-              alt="Post-item"
-              src={postData?.imageUri}
-              style={{ width: "100%", height: 250 }}
-            />
+            <>
+              {postData?.imageUri.endsWith("mp4") ||
+              postData?.imageUri.endsWith("mkv") ? (
+                <video controls style={{ width: 600, height: 200 }}>
+                  <source src={postData?.imageUri} type="video/mp4" />
+                </video>
+              ) : (
+                <img
+                  alt="Post-postData"
+                  src={postData?.imageUri}
+                  style={{ width: 600, height: 200 }}
+                />
+              )}
+            </>
           }
           style={{ maxWidth: 600 }}
         >
