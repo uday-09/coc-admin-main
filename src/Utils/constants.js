@@ -1,1 +1,1 @@
-export const API_BASE_URL = "process.env.coc";
+export const API_BASE_URL = process.env.coc;
