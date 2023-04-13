@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Route, Routes } from "react-router-dom";
 import Dashboard from "../../pages/Dashboard";
 import AllPosts from "../../pages/AllPosts";
@@ -8,18 +8,49 @@ import ManageProfile from "../../pages/ManageProfile";
 import ViewFullPost from "../../pages/ViewPost";
 import RejectPostForm from "../../pages/RejectPostForm";
 import ChangePassword from "../../pages/ChangePassword";
+import LoginPage from "../../pages/Login";
+import Cookies from "js-cookie";
+import { UserContext } from "../../Context/userContext";
 
 function AppRoutes() {
+  const token = Cookies.get("admin-token");
+
+  const { state } = useContext(UserContext);
+
+  console.log("state from routes-->", state);
+
   return (
     <Routes>
-      <Route path="/" element={<Dashboard />} />
-      <Route path="/pending-posts" element={<PendingPosts />} />
-      <Route path="/all-posts" element={<AllPosts />} />
-      <Route path="/profile" element={<ManageProfile />}></Route>
-      <Route path="/rejected-posts" element={<RejectedPosts />}></Route>
-      <Route path="/view/post/:id" element={<ViewFullPost />} />
-      <Route path="/reject/post/:id" element={<RejectPostForm />} />
-      <Route path="/change-password" element={<ChangePassword />} />
+      <Route path="/login" element={<LoginPage />} />
+      <Route path="/" element={state?.token ? <Dashboard /> : <LoginPage />} />
+      <Route
+        path="/pending-posts"
+        element={state.token ? <PendingPosts /> : <LoginPage />}
+      />
+      <Route
+        path="/all-posts"
+        element={state.token ? <AllPosts /> : <LoginPage />}
+      />
+      <Route
+        path="/profile"
+        element={state.token ? <ManageProfile /> : <LoginPage />}
+      ></Route>
+      <Route
+        path="/rejected-posts"
+        element={state.token ? <RejectedPosts /> : <LoginPage />}
+      ></Route>
+      <Route
+        path="/view/post/:id"
+        element={state.token ? <ViewFullPost /> : <LoginPage />}
+      />
+      <Route
+        path="/reject/post/:id"
+        element={state.token ? <RejectPostForm /> : <LoginPage />}
+      />
+      <Route
+        path="/change-password"
+        element={state.token ? <ChangePassword /> : <LoginPage />}
+      />
     </Routes>
   );
 }

@@ -40,7 +40,7 @@ const RecentPosts = () => {
     fetchPendingPost();
   }, []);
 
-  console.log("recentPendingPosts-->", recentPendingPosts);
+  // console.log("recentPendingPosts-->", recentPendingPosts);
 
   return (
     <Table

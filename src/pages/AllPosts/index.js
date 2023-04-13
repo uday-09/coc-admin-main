@@ -53,6 +53,14 @@ function AllPosts() {
     return <ErrorPage errorMessage="No data found at the moment!"></ErrorPage>;
   }
 
+  if (lodingAllPosts) {
+    return (
+      <ErrorPage errorMessage="Wait until we are fetching..." showImage={false}>
+        <Spin spinning={lodingAllPosts}></Spin>
+      </ErrorPage>
+    );
+  }
+
   return (
     <Spin spinning={lodingAllPosts}>
       <div className="pending-posts-container">

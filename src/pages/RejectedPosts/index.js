@@ -58,6 +58,14 @@ function RejectedPosts() {
     );
   }
 
+  if (lodingRejectedPosts) {
+    return (
+      <ErrorPage errorMessage="Wait until we are fetching..." showImage={false}>
+        <Spin spinning={lodingRejectedPosts}></Spin>
+      </ErrorPage>
+    );
+  }
+
   return (
     <Spin spinning={lodingRejectedPosts}>
       <div className="pending-posts-container">

@@ -56,6 +56,14 @@ function PendingPosts() {
     );
   }
 
+  if (loadingPengingPosts) {
+    return (
+      <ErrorPage errorMessage="Wait until we are fetching..." showImage={false}>
+        <Spin spinning={loadingPengingPosts}></Spin>
+      </ErrorPage>
+    );
+  }
+
   return (
     <Spin spinning={loadingPengingPosts}>
       <div className="pending-posts-container">
