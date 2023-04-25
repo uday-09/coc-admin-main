@@ -9,16 +9,22 @@ import Notify from "../../components/Notify";
 function RejectPostForm() {
   const { id } = useParams();
   const [postData, setPostData] = useState(null);
-  const [reason, setReason] = useState("");
+  const [reason, setReason] = useState([]);
   const textareaRef = useRef("");
   const [rejecting, setRejecting] = useState(false);
   const [success, setSuccess] = useState(false);
   const [notify, setNotify] = useState(false);
+  const [userInfo, setUserInfo] = useState(null);
+  const [err, setErr] = useState("");
+  const [note, setNote] = useState("");
 
   const getCurrentPost = async () => {
     try {
       const resp = await Api.get(`/coc/get/post/${id}`);
+      const userResp = await Api.get(`/user/${resp.data?.postedBy}`);
       setPostData(resp.data);
+      setUserInfo(userResp.data?.user);
+      console.log(userResp);
     } catch (err) {
     } finally {
     }
@@ -28,10 +34,40 @@ function RejectPostForm() {
     getCurrentPost();
   }, []);
 
+  console.log(userInfo);
+
   const handleSubmit = async () => {
     const customReasonValue = textareaRef.current;
+
+    let reasons = reason.map((item, index) => {
+      return { reason: item };
+    });
+
+    if (note) {
+      reasons = [...reasons, { reason: note }];
+    }
+
+    console.log(reasons);
+
+    setErr("");
+    if (!userInfo || !postData) {
+      setNotify(true);
+      return;
+    }
+
     try {
       setRejecting(true);
+
+      const res = await Api.post(`/send/post-status`, {
+        username: userInfo?.username,
+        postTitle: postData?.title,
+        imageUri: postData?.imageUri,
+        reciever: userInfo?.email,
+        reasons: reasons,
+      });
+
+      console.log(res);
+
       const result = await Api.patch(`/admin/update-status/${id}`, {
         status: "rejected",
       });
@@ -39,6 +75,9 @@ function RejectPostForm() {
       setSuccess(true);
     } catch (err) {
       setSuccess(false);
+      setErr(
+        err?.response?.data?.message || err.message || "Something went wrong!"
+      );
     } finally {
       setRejecting(false);
       setNotify(true);
@@ -75,7 +114,7 @@ function RejectPostForm() {
   ];
 
   const onChange = (checkedValues) => {
-    console.log(checkedValues);
+    setReason(checkedValues);
   };
 
   const notifyClose = useCallback(() => {
@@ -91,11 +130,7 @@ function RejectPostForm() {
       <Notify
         show={notify}
         success={success}
-        message={
-          success
-            ? "Post has been successfully rejected!"
-            : "Something wrong while rejecting post"
-        }
+        message={success ? "Post has been successfully rejected!" : err}
         onClose={notifyClose}
         onTimeOut={onTimeOut}
       ></Notify>
@@ -132,7 +167,7 @@ function RejectPostForm() {
               <Input.TextArea
                 rows={6}
                 ref={textareaRef}
-                onChange={(e) => setReason(e.target.value)}
+                onChange={(e) => setNote(e.target.value)}
               ></Input.TextArea>
             </Form.Item>
             <Form.Item>
