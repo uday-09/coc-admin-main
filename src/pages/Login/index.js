@@ -1,6 +1,6 @@
 import React, { useState, useContext } from "react";
 import { Button, Form, Input, Modal, Space, Typography } from "antd";
-import { LOGIN_IMAGE } from "../../Utils/constants";
+import { LOGIN_IMAGE, USER_APP_URL } from "../../Utils/constants";
 import { nonAuthApi } from "../../api/nonAuth";
 import { UserContext } from "../../Context/userContext";
 import Cookies from "js-cookie";
@@ -208,25 +208,21 @@ function LoginPage() {
         </Space>
         <Typography.Text
           style={{ color: "blue", padding: 10 }}
-          onClick={() => {
-            setSignUp(!signUp);
-            setDetails({
-              name: "",
-              userName: "",
-              newpassword: "",
-              bio: "",
-              location: "",
-              email: "",
-            });
-            setUname("");
-            setPword("");
-          }}
+          // onClick={() => {
+          //   setSignUp(!signUp);
+          //   setDetails({
+          //     name: "",
+          //     userName: "",
+          //     newpassword: "",
+          //     bio: "",
+          //     location: "",
+          //     email: "",
+          //   });
+          //   setUname("");
+          //   setPword("");
+          // }}
         >
-          <a href="#">
-            {!signUp
-              ? `Don't have account? Signup here!`
-              : `Already have account? Signin here!`}
-          </a>
+          <a href={USER_APP_URL}>Go back</a>
         </Typography.Text>
       </Modal>
     </>

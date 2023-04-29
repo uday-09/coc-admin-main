@@ -1,3 +1,4 @@
+import { SearchOutlined } from "@ant-design/icons";
 import { Menu } from "antd";
 import React from "react";
 import { AiFillWarning, AiOutlineAppstore, AiOutlineKey } from "react-icons/ai";
@@ -19,6 +20,11 @@ function SideMenu() {
             label: "Dashboard",
             icon: <AiOutlineAppstore />,
             key: "/",
+          },
+          {
+            label: "Search",
+            icon: <SearchOutlined />,
+            key: "/search",
           },
           {
             label: "Pending Posts",

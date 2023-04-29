@@ -9,6 +9,7 @@ import ViewFullPost from "../../pages/ViewPost";
 import RejectPostForm from "../../pages/RejectPostForm";
 import ChangePassword from "../../pages/ChangePassword";
 import LoginPage from "../../pages/Login";
+import Search from "../../pages/Search";
 import Cookies from "js-cookie";
 import { UserContext } from "../../Context/userContext";
 
@@ -51,6 +52,7 @@ function AppRoutes() {
         path="/change-password"
         element={state.token ? <ChangePassword /> : <LoginPage />}
       />
+      <Route path="/search" element={state.token ? <Search /> : <Search />} />
     </Routes>
   );
 }
